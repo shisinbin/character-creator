@@ -56,11 +56,7 @@ This project uses **CSS Modules**. CSS modules are ultimately very similar to va
 import styles from './Something.module.css';
 
 function Something() {
-  return (
-    <div className={styles.wrapper}>
-      I'll be 500px wide!
-    </div>
-  );
+  return <div className={styles.wrapper}>I'll be 500px wide!</div>;
 }
 ```
 
@@ -73,6 +69,8 @@ Additionally, a few global styles can be found in `src/index.css`.
 Let's start with a small detail: The footer links are unreadable:
 
 <img alt="Side-by-side comparison of the current footer vs. the ideal one" src="./docs/footer-fix.png" style="max-width: 500px" />
+
+> **Solution:** `color: inherit`
 
 ### Exercise 2: Layout adjustments
 
@@ -92,11 +90,23 @@ Give the character a minimum height of 500px. On smaller windows, this means the
 
 > NOTE: If you notice at some point that the character SVG disappears, it's likely because it needs to be given an explicit width/height. This is discussed in more depth on the “Solution” page, https://courses.joshwcomeau.com/css-for-js/02-rendering-logic-2/20-character-workshop-solution#collapsed-svgs
 
+> **Solution:** <br/>
+> Set `width: 65%` on the max-width-wrapper, `width: 50%` on the control-column.<br/>
+> Then for the character, first target the character wrapper, as that contains the svg, and the svg uses `height: 100%` so it will take up all the wrapper. On the wrapper, use `position: fixed` to start the process of fixing its position relative to the viewport. Then we need to give it some kind of dimensions so we can see it, and the idea was to use the layout to help us work out the percentages. So, we want it to start `60%` from the left, because the control-column takes up 50% and so it makes sense for it to start around that mark. But also 15% from the `top` and 15% from the `bottom`, because it felt right. Finally, give it a `min-height` so if it gets squished, it retains at least a certain minimum height.
+
 ### Exercise 3: Overflow
 
 Each control panel features a number of customizations. For control panels with too many options, a horizontal scrollbar should be introduced:
 
 <img alt="Close-up screen recording of the overflow area in the control-panel" src="./docs/overflow.gif" style="width: 100%;" />
+
+<br/>
+
+> **Solution:**
+> add
+> `overflow-x: auto;` and
+> `white-space: nowrap;`
+> to the `<ButtonRow>` component. This adds a scrollbar to the rows that need it right underneath the buttons. This is almost okay, except that the scrollbar should be on the bottom of the container. So, we use the negative margins trick to expand the button row to take up the container on the left, right and bottom, before adding the same amount of `padding` to the component, thus achieving the desired effect.
 
 ### Exercise 4: Perspective decoration
 
@@ -112,6 +122,9 @@ You can use the background color `hsl(195deg, 20%, 86%)`.
 
 For bonus points, solve this challenge without setting any z-indexes.
 
+> **Solution:**
+> add an empty `<div>`, give it a class so we can apply CSS to it. In the CSS, add `position: fixed`, and the background color, and give it the dimensions we want so that it takes the bottom 40%. Then, the big question is how do we get it to lie underneath the other elements without using `z-index`? Well, we can use DOM order inside the `<main>` component, so put the `<div>` at the beginning. But we also need to do one other thing and that is make the other element in main, the wrapper, a _positioned_ element so that the DOM order thing works. So, we just add a simple `position: relative` to the wrapper element in main, and the desired effect was achieved.
+
 ### Exercise 5 (Stretch): Implement a mobile variant
 
 On mobile devices, the cards should stack horizontally, and sit near the bottom of the screen, underneath the character:
@@ -125,3 +138,9 @@ On mobile devices, the cards should stack horizontally, and sit near the bottom 
 **Workshops are submitted through the course platform.** Commit your changes, push them to your fork, and submit the link by clicking the "Complete lesson" button on the workshop page.
 
 If you're not comfortable with Git, you can upload a `.zip` file using Dropbox or Google Drive, and paste a link to the public file instead.
+
+## Note to self
+
+See 'solution' text in every exercise above.
+
+I really liked the trick of using negative margins to expand an inner element to take up full width and bottom of its parent element (effectively negating the padding that had been applied) before then applying an internal padding. That was pretty cool.
